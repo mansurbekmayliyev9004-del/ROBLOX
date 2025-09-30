@@ -1,0 +1,53 @@
+local Player = game:GetService("Players").LocalPlayer
+local Character= Player.Character or Player.CharacterAdded:Wait()
+local Humanoid= Character:WaitForChild("Humanoid")
+
+-- 自动收集功能
+function autoCollect()
+while task.wait(0.5) do
+for _, item in pairs(workspace:GetChildren()) do
+if item:FindFirstChild("IsCollectible") then
+Character:MoveTo(item.Position)
+task.wait(0.3)
+firetouchinterest(Character.PrimaryPart, item, 0)
+end
+end
+end
+end
+
+-- 速度调整
+Humanoid.WalkSpeed= 50
+Humanoid.JumpPower= 100
+
+-- 自动跳跃
+task.spawn(function()
+while task.wait(1) do
+Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end
+end)
+
+-- 自动装备工具
+function autoEquipTools()
+for _, tool in pairs(Player.Backpack:GetChildren()) do
+if tool:IsA("Tool") then
+tool.Parent = Character
+end
+end
+end
+
+-- 无限跳跃
+local UIS= game:GetService("UserInputService")
+UIS.JumpRequest:Connect(function()
+Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end)
+
+-- 穿墙模式
+for_, part in pairs(Character:GetDescendants()) do
+if part:IsA("BasePart") then
+part.CanCollide = false
+end
+end
+
+-- 启动功能
+autoEquipTools()
+autoCollect()
